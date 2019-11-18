@@ -1,0 +1,18 @@
+<p class="error-message">
+    <span class="emoji">
+        {{#if emoji}}
+        {{emoji}}
+        {{else}}
+        🤕
+        {{/if}}
+    </span>
+    {{#if errorText}}
+    {{errorText}}
+    {{else}}
+    Sorry, something went wrong
+    {{/if}}
+    <br>
+    <br>
+    <a href="javascript:window.location.reload(true)" class="nice-btn">Refresh site</a>
+    <a href="/" class="nice-btn">Go home</a>
+</p>

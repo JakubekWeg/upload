@@ -1,0 +1,31 @@
+<script>
+    let remainTime = +{{ expreAfter }}
+    setInterval(() => {
+        if (remainTime <= 1)
+            location.reload()
+        document.getElementById('timer').innerText = --remainTime
+    }, 1000)
+</script>
+
+<div class="token-layout">
+    <p class="title">It's your upload code:</p>
+    <p class="code">{{code}}</p>
+    <p class="info">It'll expire when used or in <span id="timer">{{expreAfter}}</span> seconds</p>
+
+    <div class="nice-form">
+        <label>
+            <span>Link to upload:</span>
+            <input id="share-link" onclick="setSelectionRange(0, value.length)" type="text" readonly
+                value="/token/upload#{{code}}">
+        </label>
+    </div>
+
+    <div class="btn-bar">
+        <a href="" class="nice-btn">Refresh</a>
+        <a href="renew" class="nice-btn">Renew token</a>
+    </div>
+</div>
+<script>
+    const input = document.getElementById('share-link')
+    if (input && input.value.startsWith('/')) input.value = window.location.origin + input.value
+</script>

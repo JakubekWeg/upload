@@ -1,0 +1,59 @@
+<div class="nice-form">
+    <label>
+        <span>File name:</span>
+        <input type="text" readonly value="{{name}}">
+    </label>
+
+    {{#if isOwner}}
+    {{#if createdDate}}
+    <label>
+        <span>Uploaded:</span>
+        <input type="text" readonly value="{{createdDate}}">
+    </label>
+    {{/if}}
+
+    <label>
+        <span>Visibility of the file:</span>
+
+        <a href="/files/{{fid}}/change/visibility/{{#if isPublic}}0{{else}}1{{/if}}" class="nice-btn">
+            Make {{#if isPublic}}private{{else}}public{{/if}}
+        </a>
+    </label>
+    {{#if isPublic}}
+    <label>
+        <span>File can be accessed by everyone using that link:</span>
+        <input onclick="setSelectionRange(0, value.length)" id="share-link" type="text" readonly value="/files/{{fid}}">
+    </label>
+    {{/if}}
+    {{/if}}
+
+
+    {{#if showPreview}}
+    <hr>
+    <div class="btn-bar">
+        <a href="/files/{{fid}}/download" class="nice-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M13 5v6h1.17L12 13.17 9.83 11H11V5h2m2-2H9v6H5l7 7 7-7h-4V3zm4 15H5v2h14v-2z" /></svg>
+            <span>Download this file</span>
+        </a>
+        <a href="/files/{{fid}}/view" class="nice-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" /></svg>
+            <span>Open in fullscreen</span>
+        </a>
+    </div>
+    <iframe class="file-preview" src="/files/{{fid}}/view" frameborder="0"></iframe>
+    {{else}}
+    <p class="error-message">
+        <span class="emoji">🤔</span>
+        Sorry, this file's type is <i>{{type}}</i>
+        therefore preview is unavailable, but you still can download it anyway
+        <br>
+        <a href="/files/{{fid}}/download" class="nice-btn">Download</a>
+    </p>
+    {{/if}}
+</div>
+<script>
+    const input = document.getElementById('share-link')
+    if (input && input.value.startsWith('/')) input.value = window.location.origin + input.value
+</script>

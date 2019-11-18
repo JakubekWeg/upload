@@ -1,0 +1,18 @@
+<form class="nice-form with-submit" action="" method="post">
+    <input type="hidden" value="{{fid}}" name="fid">
+
+
+    <label>
+        <span>Deleting file:</span>
+        <input type="text" readonly value="{{name}}">
+    </label>
+
+    <label>
+        <span>Will free up:</span>
+        <input type="text" readonly value="{{size size}}">
+    </label>
+
+    <a class="nice-btn" href=".">Cancel</a>
+
+    <input class="nice-btn" style="background: red" type="submit" value="Delete">
+</form>
