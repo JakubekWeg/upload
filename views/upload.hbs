@@ -1,48 +1,49 @@
 <script>
-    const AVAILABLE_BYTES = parseInt("{{ availableBytes }}")
+    const AVAILABLE_BYTES = parseInt("{{ availableBytes }}");
     let selectedFile = null;
+
     function submitForm(event) {
         if (!selectedFile) {
-            event.preventDefault()
+            event.preventDefault();
 
-            document.getElementById('select-file-btn').style.background = '#CC0000'
-            return false
+            document.getElementById('select-file-btn').style.background = '#CC0000';
+            return false;
         }
 
-        sendForm(event.target)
-        event.preventDefault()
-        return false
+        sendForm(event.target);
+        event.preventDefault();
+        return false;
     }
 
     function fileSelected() {
-        document.getElementById('filename').value = (selectedFile || {}).name || ''
+        document.getElementById('filename').value = (selectedFile || {}).name || '';
         document.getElementById('big-file-warning').style.display
-            = (!isNaN(AVAILABLE_BYTES) && selectedFile && selectedFile.size > AVAILABLE_BYTES) ? 'block' : 'none'
+                = (!isNaN(AVAILABLE_BYTES) && selectedFile && selectedFile.size > AVAILABLE_BYTES) ? 'block' : 'none';
     }
 
     function onFileInputChanged(input) {
         setTimeout(() => {
             selectedFile = input.files[0];
-            fileSelected()
-        }, 100)
+            fileSelected();
+        }, 100);
     }
 
     function setOverlayVisible(visible) {
-        const el = document.getElementById('upload-overlay')
+        const el = document.getElementById('upload-overlay');
         if (visible) {
-            el.style.display = null
-            setTimeout(() => el.style.opacity = 1, 100)
+            el.style.display = null;
+            setTimeout(() => el.style.opacity = 1, 100);
         } else
-            setTimeout(() => el.style.opacity = 0, 2000)
+            setTimeout(() => el.style.opacity = 0, 2000);
 
         setTimeout(() => {
-            el.style.display = visible ? null : 'none'
-        }, 2500)
+            el.style.display = visible ? null : 'none';
+        }, 2500);
     }
 
     function sendForm(form) {
         if (form.method.toUpperCase() !== 'POST')
-            throw new Error('Only POST method is supported')
+            throw new Error('Only POST method is supported');
 
         const formData = new FormData();
         for (const input of form.getElementsByTagName('input')) {
@@ -51,7 +52,7 @@
                 switch (input.type.toLowerCase()) {
                     case 'number':
                     case 'text':
-                        value = input.value
+                        value = input.value;
                         break;
                     case 'file':
                         //value = input.files[0]
@@ -59,65 +60,65 @@
                         break;
                 }
                 if (value)
-                    formData.append(input.name, value)
+                    formData.append(input.name, value);
             }
         }
 
         const req = new XMLHttpRequest();
         req.onerror = () => {
-            document.getElementById('upload-status').innerText = 'Failed (' + (req.statusText || 'unknown error') + ')'
-            document.getElementById('cancel-btn').disabled = 'disabled'
-            form.getElementsByTagName('fieldset')[0].disabled = null
-            setOverlayVisible(false)
-        }
+            document.getElementById('upload-status').innerText = 'Failed (' + (req.statusText || 'unknown error') + ')';
+            document.getElementById('cancel-btn').disabled = 'disabled';
+            form.getElementsByTagName('fieldset')[0].disabled = null;
+            setOverlayVisible(false);
+        };
         req.onabort = () => {
-            document.getElementById('cancel-btn').disabled = 'disabled'
-            document.getElementById('upload-status').innerText = 'Aborted'
-            form.getElementsByTagName('fieldset')[0].disabled = null
-            setOverlayVisible(false)
-        }
+            document.getElementById('cancel-btn').disabled = 'disabled';
+            document.getElementById('upload-status').innerText = 'Aborted';
+            form.getElementsByTagName('fieldset')[0].disabled = null;
+            setOverlayVisible(false);
+        };
         req.onload = () => {
             if ((req.status / 100 | 0) !== 2) {
-                return req.onerror()
+                return req.onerror();
             }
-            document.getElementById('cancel-btn').disabled = 'disabled'
-            document.getElementById('upload-status').innerText = 'Finished'
-            form.getElementsByTagName('fieldset')[0].disabled = null
-            const fileId = req.getResponseHeader('File-Id')
+            document.getElementById('cancel-btn').disabled = 'disabled';
+            document.getElementById('upload-status').innerText = 'Finished';
+            form.getElementsByTagName('fieldset')[0].disabled = null;
+            const fileId = req.getResponseHeader('File-Id');
             if (fileId) {
-                setTimeout(() => window.location.replace('/files/' + fileId), 1000)
-                setOverlayVisible(false)
-            }
-            else
-                document.getElementById('upload-next-btn').style.display = null
+                setTimeout(() => window.location.replace('/files/' + fileId), 1000);
+                setOverlayVisible(false);
+            } else
+                document.getElementById('upload-next-btn').style.display = null;
 
 
-        }
-        const progressText = document.getElementById('progress')
+        };
+        const progressText = document.getElementById('progress');
         req.upload.onprogress = (e) => {
-            progressText.innerText = Math.round(e.loaded / e.total * 1000) / 10
-        }
+            progressText.innerText = (Math.round(e.loaded / e.total * 1000) / 10).toFixed(2);
+        };
         req.open(form.method, form.action);
         req.send(formData);
-        setOverlayVisible(true)
-        document.getElementById('upload-next-btn').style.display = 'none'
-        form.getElementsByTagName('fieldset')[0].disabled = 'disabled'
-        document.getElementById('cancel-btn').disabled = null
-        document.getElementById('upload-status').innerText = 'Uploading file...'
+        setOverlayVisible(true);
+        document.getElementById('upload-next-btn').style.display = 'none';
+        form.getElementsByTagName('fieldset')[0].disabled = true;
+        document.getElementById('cancel-btn').disabled = null;
+        document.getElementById('upload-status').innerText = 'Uploading file...';
         form.xhr = req;
     }
 
     function cancelUpload() {
-        document.getElementById('cancel-btn').disabled = 'disabled'
-        document.getElementById('upload-status').innerText = 'Cancelling'
+        document.getElementById('cancel-btn').disabled = 'disabled';
+        document.getElementById('upload-status').innerText = 'Cancelling';
         document.getElementsByTagName('form')[0].xhr.abort();
     }
+
     function dropHandler(ev) {
         ev.preventDefault();
         dragLeaveHandler(ev);
-        const fileSelector = document.getElementById('file-selector')
+        const fileSelector = document.getElementById('file-selector');
         if (ev.dataTransfer.items) {
-            for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+            for (let i = 0; i < ev.dataTransfer.items.length; i++) {
                 if (ev.dataTransfer.items[i].kind === 'file') {
                     selectedFile = ev.dataTransfer.items[i].getAsFile();
                     break;
@@ -125,47 +126,50 @@
             }
         } else {
             if (ev.dataTransfer.files.length)
-                selectedFile = ev.dataTransfer.files[0]
+                selectedFile = ev.dataTransfer.files[0];
         }
         fileSelected();
     }
 
     function dragOverHandler(ev) {
         ev.preventDefault();
-        document.getElementById('drop-files-overlay').style.opacity = 1
+        document.getElementById('drop-files-overlay').style.opacity = 1;
     }
+
     function dragLeaveHandler(ev) {
         ev.preventDefault();
-        document.getElementById('drop-files-overlay').style.opacity = 0
+        document.getElementById('drop-files-overlay').style.opacity = 0;
     }
 </script>
 
 <form class="nice-form with-submit" action="" method="post" enctype="multipart/form-data"
-    onsubmit="return submitForm(event)" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)"
-    ondragleave="dragLeaveHandler(event)">
+      onsubmit="return submitForm(event)" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)"
+      ondragleave="dragLeaveHandler(event)">
     <fieldset>
 
         {{#if availableBytes}}
-        <label>
-            <span>Available space:</span>
-            <input type="text" readonly value="{{size availableBytes}}">
-        </label>
-        {{else}}
-        {{!-- Using token upload --}}
-        <label>
-            <span>Upload token</span>
+            <label>
+                <span>Available space:</span>
+                <input type="text" readonly value="{{size availableBytes}}">
+            </label>
+        {{/if}}
 
-            <input type="number" step="1" pattern="\d{0,4}" oninput="this.value=this.value.replace(/[^0-9]/g,'');"
-                class="token" name="token" maxlength="{{tokenLength}}" minlength="{{tokenLength}}" required autofocus>
-        </label>
+        {{#if usingToken}}
+            <label>
+                <span>Upload token</span>
+
+                <input type="number" step="1" pattern="\d{0,4}" oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+                       class="token" name="token" maxlength="{{tokenLength}}" minlength="{{tokenLength}}" required
+                       autofocus>
+            </label>
         {{/if}}
 
         <input id="file-selector" style="display: none;" type="file" accept="*/*" name="file"
-            placeholder="File to upload" onchange="onFileInputChanged(this)">
+               placeholder="File to upload" onchange="onFileInputChanged(this)">
 
         <label class="single-cell">
             <input id="select-file-btn" type="button" value="Select file" class="nice-btn"
-                onclick="document.getElementById('file-selector').click();style.background = null">
+                   onclick="document.getElementById('file-selector').click();style.background = null">
         </label>
 
         <label>
@@ -183,13 +187,13 @@
     </fieldset>
     <div id="upload-overlay" class="upload-overlay" style="opacity: 0;display:none">
         <p id="upload-status"></p>
-        <p class="progress"> <span id="progress"></span>%</p>
+        <p class="progress"><span id="progress"></span>%</p>
         <div class="btn-bar">
             <input id="cancel-btn" type="button" onclick="cancelUpload()" class="nice-btn" style="background:#CC0000"
-                value="Cancel">
+                   value="Cancel">
 
             <input id="upload-next-btn" type="button" onclick="location.reload()" class="nice-btn" style="display: none"
-                value="Upload another one">
+                   value="Upload another one">
         </div>
     </div>
 
@@ -200,5 +204,5 @@
 </form>
 <script>
     if (location.hash)
-        document.getElementsByClassName('token')[0].value = location.hash.substring(1)
+        document.getElementsByClassName('token')[0].value = location.hash.substring(1);
 </script>

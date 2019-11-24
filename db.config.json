@@ -1,7 +1,7 @@
 {
   "_about": "This file contains configuration for database connection, fill it in with your data",
-  "hostname": "localhost",
+  "hostname": "jakubwe.ga",
   "username": "upload",
-  "password": "<secret>",
+  "password": "Wnx0l63RNlev2Qin",
   "catalog": "upload"
 }

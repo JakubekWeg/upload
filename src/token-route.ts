@@ -8,12 +8,12 @@ export function init(app: Express) {
         res.render('token-showing', {
             pageTitle: 'Your upload token:',
             code: user.currentUploadCode,
-            expreAfter: user.currentCodeExpresAfter / 1000 | 0,
+            expireAfter: user.uploadCodeExpiresIn / 1000 | 0,
         })
     }))
 
     app.get('/token/renew', (req, res) => withUser(req, res, (user) => {
-        user.onUploadCodeUsed();
+        user.makeUploadCodeExpired();
         res.redirect('/token/show')
     }))
 
@@ -21,15 +21,13 @@ export function init(app: Express) {
         res.render('upload', {
             pageTitle: 'Upload file using a token',
             tokenLength: User.UPLOAD_CODE_LENGTH,
+            usingToken: true
         })
     })
 
     app.post('/token/upload', (req, res) => {
         handleFileUpload(req, res, (fields) => {
-            const user = db.getUserByUploadCode(fields.token)
-            if (user)
-                user.onUploadCodeUsed()
-            return user
+            return db.getUser(db.getUidByUploadCode(fields.token))
         }, () => {
             res.render('file-uploaded', {
                 pageTitle: 'Your file has been uploaded'

@@ -3,15 +3,18 @@
     File has been successfully uploaded
     <br>
     {{#if filename}}
-    <small>{{filename}} {{#if size}}({{size size}}){{/if}}</small>
+        <small>
+            {{filename}}
+            {{#if size}}({{size size}}){{/if}}
+        </small>
     {{/if}}
     {{#unless fileId}}
-    <small>Owner of used token has access to this file</small>
+        <small>Owner of used token has access to this file</small>
     {{/unless}}
     <br>
     <br>
     {{#if fileId}}
-    <a href="/files/{{fileId}}" class="nice-btn">Open it</a>
-    <a href="/files" class="nice-btn">View all files</a>
+        <a href="/files/{{fileId}}" class="nice-btn">Open it</a>
+        <a href="/files" class="nice-btn">View all files</a>
     {{/if}}
 </p>
