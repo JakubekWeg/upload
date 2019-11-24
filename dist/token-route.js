@@ -24,7 +24,12 @@ function init(app) {
     });
     app.post('/token/upload', (req, res) => {
         global_1.handleFileUpload(req, res, (fields) => {
-            return database_1.INSTANCE.getUser(database_1.INSTANCE.getUidByUploadCode(fields.token));
+            return database_1.INSTANCE.getUser(database_1.INSTANCE.getUidByUploadCode(fields.token))
+                .then(user => {
+                if (user)
+                    user.makeUploadCodeExpired();
+                return user;
+            });
         }, () => {
             res.render('file-uploaded', {
                 pageTitle: 'Your file has been uploaded'

@@ -119,6 +119,7 @@ export class User {
 
 	public makeUploadCodeExpired() {
 		this._uploadCodeExpires = 0
+		this._uploadCode = undefined
 		db._forgetUploadCode(this._uploadCode)
 	}
 

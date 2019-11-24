@@ -10,8 +10,13 @@ import { init as initTokenRoutes } from './token-route'
 
 
 (async () => {
-	await initDatabase()
-	console.log('Connected with database!')
+	try {
+		await initDatabase()
+		console.log('Connected with database!')
+	} catch (e) {
+		console.error('Unable to connect to database:', e.message)
+		return
+	}
 	if (!db.hasUser('root')) {
 		console.warn('Creating "root" user with password ' + DEFAULT_ROOT_PASSWORD)
 		const root = await db.createUser('root', DEFAULT_ROOT_PASSWORD, 0, 0)

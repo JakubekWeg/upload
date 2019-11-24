@@ -28,6 +28,11 @@ export function init(app: Express) {
     app.post('/token/upload', (req, res) => {
         handleFileUpload(req, res, (fields) => {
             return db.getUser(db.getUidByUploadCode(fields.token))
+                .then(user => {
+                    if (user)
+                        user.makeUploadCodeExpired()
+                    return user
+                })
         }, () => {
             res.render('file-uploaded', {
                 pageTitle: 'Your file has been uploaded'

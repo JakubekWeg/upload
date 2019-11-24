@@ -87,6 +87,7 @@ class User {
     }
     makeUploadCodeExpired() {
         this._uploadCodeExpires = 0;
+        this._uploadCode = undefined;
         database_1.INSTANCE._forgetUploadCode(this._uploadCode);
     }
     /** This method is called by a framework, don't call it */

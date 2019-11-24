@@ -1,7 +1,0 @@
-{
-  "_about": "This file contains configuration for database connection, fill it in with your data",
-  "hostname": "localhost",
-  "username": "upload",
-  "password": "<secret>",
-  "catalog": "upload"
-}

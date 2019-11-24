@@ -32,6 +32,7 @@ function init(app) {
         });
     }));
     const SUPPORTED_INLINE_PREVIEWS = ['text', 'image', 'video', 'audio'];
+    const BLOCKED_PREVIEWS_MIME_TYPES = ['text/html'];
     app.get('/files/:fileId/:action?', async (req, res, next) => {
         if (req.params.action && !['view', 'download', 'delete'].includes(req.params.action))
             return next();
@@ -51,17 +52,17 @@ function init(app) {
                         case 'download':
                             res.set('Content-Disposition', 'attachment;filename=' + encodeURIComponent(file.downloadableName));
                             res.type(file.type);
-                            res.sendFile(file.fid, { root: configuration_1.UPLOADS_FOLDER }, (e) => {
+                            res.sendFile(file.fid, { root: configuration_1.UPLOADS_FOLDER, maxAge: 10 * 1000 }, (e) => {
                                 if (e)
-                                    fileAccessErrorCallback();
+                                    res.end();
                             });
                             break;
                         case 'view':
                             res.set('Content-Disposition', 'inline;filename=' + encodeURIComponent(file.downloadableName));
                             res.type(file.type);
-                            res.sendFile(file.fid, { root: configuration_1.UPLOADS_FOLDER }, (e) => {
+                            res.sendFile(file.fid, { root: configuration_1.UPLOADS_FOLDER, maxAge: 10 * 1000 }, (e) => {
                                 if (e)
-                                    fileAccessErrorCallback();
+                                    res.end();
                             });
                             break;
                         case 'delete':
@@ -78,7 +79,8 @@ function init(app) {
                                 });
                             break;
                         default:
-                            const showPreview = SUPPORTED_INLINE_PREVIEWS.includes(file.type.split('/')[0]);
+                            const showPreview = !BLOCKED_PREVIEWS_MIME_TYPES.includes(file.type)
+                                && SUPPORTED_INLINE_PREVIEWS.includes(file.type.split('/')[0]);
                             res.render('file-viewer', {
                                 pageTitle: 'File viewer',
                                 fid: file.fid,

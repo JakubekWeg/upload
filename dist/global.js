@@ -80,7 +80,7 @@ exports.handleFileUpload = function (req, res, user, onSuccess) {
             }
             const fileId = database_1.INSTANCE.generateUniqueFileId();
             const indexOfDot = files.file.name.lastIndexOf('.');
-            const file = await database_1.INSTANCE.createFileInfo(files.file.path, fileId, fields.filename.toString() || files.file.name || 'unnamed', files.file.type, indexOfDot > 0 ? files.file.name.substring(indexOfDot + 1) : '', files.file.size, new Date().getTime(), false, user.uid);
+            const file = await database_1.INSTANCE.createFileInfo(files.file.path, fileId, fields.filename.toString() || files.file.name || 'unnamed', files.file.type.trim().toLowerCase(), indexOfDot > 0 ? files.file.name.substring(indexOfDot + 1) : '', files.file.size, new Date().getTime(), false, user.uid);
             onSuccess(file);
         }
         catch (e) {

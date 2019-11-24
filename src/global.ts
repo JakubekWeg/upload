@@ -3,9 +3,8 @@ import { deleteFile } from './fs'
 import { User } from './user'
 import { Request, Response } from 'express'
 import { INSTANCE as db } from './database'
-import { FILE_MAX_SIZE, TMP_UPLOADS_FOLDER, UPLOADS_FOLDER } from './configuration'
+import { FILE_MAX_SIZE, TMP_UPLOADS_FOLDER } from './configuration'
 import { IncomingForm } from 'formidable'
-import { unlink, rename } from 'fs'
 import { File } from './file'
 
 export const POST_DATA_HANDLER = bodyParserUrlEncoded({
@@ -110,7 +109,7 @@ export const handleFileUpload = function (req: Request, res: Response,
 			const indexOfDot = files.file.name.lastIndexOf('.')
 			const file = await db.createFileInfo(files.file.path, fileId,
 				fields.filename.toString() || files.file.name || 'unnamed',
-				files.file.type,
+				files.file.type.trim().toLowerCase(),
 				indexOfDot > 0 ? files.file.name.substring(indexOfDot + 1) : '',
 				files.file.size, new Date().getTime(),
 				false, user.uid)

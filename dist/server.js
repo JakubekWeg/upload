@@ -9,8 +9,14 @@ const global_1 = require("./global");
 const files_route_1 = require("./files-route");
 const token_route_1 = require("./token-route");
 (async () => {
-    await database_1.initDatabase();
-    console.log('Connected with database!');
+    try {
+        await database_1.initDatabase();
+        console.log('Connected with database!');
+    }
+    catch (e) {
+        console.error('Unable to connect to database:', e.message);
+        return;
+    }
     if (!database_1.INSTANCE.hasUser('root')) {
         console.warn('Creating "root" user with password ' + configuration_1.DEFAULT_ROOT_PASSWORD);
         const root = await database_1.INSTANCE.createUser('root', configuration_1.DEFAULT_ROOT_PASSWORD, 0, 0);

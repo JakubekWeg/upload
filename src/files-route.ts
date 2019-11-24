@@ -18,7 +18,7 @@ export function init(app: Express) {
 	}
 
 	app.get('/files', (req, res) => withUser(req, res, async (user) => {
-		const files = await Promise.all(user.filesList.map(e => db.getFileInfo(e) ))
+		const files = await Promise.all(user.filesList.map(e => db.getFileInfo(e)))
 
 		let sortingMethod: any = FILES_SORTING_METHODS[req.query.sort]
 		if (!sortingMethod) {
@@ -39,6 +39,7 @@ export function init(app: Express) {
 
 
 	const SUPPORTED_INLINE_PREVIEWS = ['text', 'image', 'video', 'audio']
+	const BLOCKED_PREVIEWS_MIME_TYPES = ['text/html']
 
 	app.get('/files/:fileId/:action?', async (req, res, next) => {
 		if (req.params.action && !['view', 'download', 'delete'].includes(req.params.action)) return next()
@@ -62,15 +63,15 @@ export function init(app: Express) {
 						case 'download':
 							res.set('Content-Disposition', 'attachment;filename=' + encodeURIComponent(file.downloadableName))
 							res.type(file.type)
-							res.sendFile(file.fid, {root: UPLOADS_FOLDER}, (e) => {
-								if (e) fileAccessErrorCallback()
+							res.sendFile(file.fid, {root: UPLOADS_FOLDER, maxAge: 10 * 1000}, (e) => {
+								if (e) res.end()
 							})
 							break
 						case 'view':
 							res.set('Content-Disposition', 'inline;filename=' + encodeURIComponent(file.downloadableName))
 							res.type(file.type)
-							res.sendFile(file.fid, {root: UPLOADS_FOLDER}, (e) => {
-								if (e) fileAccessErrorCallback()
+							res.sendFile(file.fid, {root: UPLOADS_FOLDER, maxAge: 10 * 1000}, (e) => {
+								if (e) res.end()
 							})
 							break
 						case 'delete':
@@ -88,7 +89,9 @@ export function init(app: Express) {
 							break
 
 						default:
-							const showPreview = SUPPORTED_INLINE_PREVIEWS.includes(file.type.split('/')[0])
+							const showPreview =
+								!BLOCKED_PREVIEWS_MIME_TYPES.includes(file.type)
+								&& SUPPORTED_INLINE_PREVIEWS.includes(file.type.split('/')[0])
 							res.render('file-viewer', {
 								pageTitle: 'File viewer',
 								fid: file.fid,

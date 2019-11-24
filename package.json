@@ -16,7 +16,7 @@
     "express-formidable": "^1.2.0",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.0",
-    "mysql": "^2.0.1",
+    "mysql": "^2.0.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
