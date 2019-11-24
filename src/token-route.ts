@@ -6,7 +6,7 @@ import { INSTANCE as db } from "./database";
 export function init(app: Express) {
     app.get('/token/show', (req, res) => withUser(req, res, (user) => {
         res.render('token-showing', {
-            pageTitle: 'Your upload token:',
+            pageTitle: 'Your upload token',
             code: user.currentUploadCode,
             expireAfter: user.uploadCodeExpiresIn / 1000 | 0,
         })
@@ -14,6 +14,11 @@ export function init(app: Express) {
 
     app.get('/token/renew', (req, res) => withUser(req, res, (user) => {
         user.makeUploadCodeExpired();
+        res.redirect('/token/show')
+    }))
+
+    app.get('/token/extend', (req, res) => withUser(req, res, (user) => {
+        user.extendUploadCodeDuration();
         res.redirect('/token/show')
     }))
 

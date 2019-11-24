@@ -1,6 +1,7 @@
 :root {
     --BACKGROUND-COLOR: #fff;
     --TEXT-COLOR-PRIMARY: #000;
+    --TEXT-COLOR-SECONDARY: #222;
     --TEXT-COLOR-DISABLED: #444;
     --BACKGROUND-COLOR-SECONDARY: #f7f7f7;
     background: #ddd;
@@ -10,6 +11,7 @@
     :root {
         --BACKGROUND-COLOR: #2a2a2a;
         --TEXT-COLOR-PRIMARY: #eee;
+        --TEXT-COLOR-SECONDARY: #ddd;
         --TEXT-COLOR-DISABLED: #ccc;
         --INPUT-BACKGROUND: #444;
         --BACKGROUND-COLOR-SECONDARY: #555;
@@ -240,8 +242,8 @@ div.files-list > * {
 
 @media (max-width: 400px) {
     div.files-list > * {
-        grid-template-columns: 1fr auto;
-        grid-template-areas: 'name name' 'size icons';
+        grid-template-columns: 1fr auto auto;
+        grid-template-areas: 'name size icons';
     }
 
 }
@@ -276,8 +278,8 @@ div.files-list > * .icons {
 
 div.files-list > * .icons > a > img {
     filter: var(--ICON-FILTER);
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     vertical-align: middle;
     border-radius: 4px;
     padding: 4px;
@@ -308,4 +310,30 @@ iframe.file-preview {
     margin: 2px;
     padding: 4px 8px;
     border: 1px solid gray;
+}
+
+.simple-list {
+    list-style-type: none;
+    margin: 4px;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: 0;
+}
+
+.simple-list a {
+    display: block;
+    color: var(--TEXT-COLOR-SECONDARY);
+    text-decoration: none;
+    padding: 8px;
+    transition: background-color .2s;
+    border-radius: 4px;
+}
+.simple-list>* {
+    border-bottom: 1px solid #aaa;
+}
+.simple-list>*:last-child {
+    border-bottom: none;
+}
+.simple-list a:hover {
+    background-color: var(--BACKGROUND-COLOR-SECONDARY);
 }

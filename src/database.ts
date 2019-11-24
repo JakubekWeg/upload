@@ -61,7 +61,7 @@ export class Database {
 	                 quota: number, maxFiles: number): Promise<User> {
 		if (!name)
 			throw new Error('Missing user name')
-		name = name.toLowerCase()
+		name = name.trim().toLowerCase()
 		if (this.USERS.has(name))
 			throw new Error('User with this name already exists!')
 
@@ -84,6 +84,10 @@ export class Database {
 
 	hasUser(uid: string): boolean {
 		return this.USERS.has(uid.toLowerCase())
+	}
+
+	get allUserIds(): string[] {
+		return Array.from(this.USERS.keys())
 	}
 
 	async getUser(uid: string | undefined): Promise<User | undefined> {
@@ -110,6 +114,17 @@ export class Database {
 			this.USERS.set(uid, user)
 		}
 		return user
+	}
+
+	/** This method is called by a framework, don't call it
+	 * Use user.deleteMe() instead */
+	async _deleteUser(uid: string) {
+		uid = uid.trim().toLowerCase()
+		if (!this.USERS.has(uid)) return
+
+		await this.mysqlConnection.query('DELETE FROM users WHERE name = ?', uid)
+
+		this.USERS.delete(uid)
 	}
 
 	async signInUserByPassword(login: string, password: string): Promise<User> {

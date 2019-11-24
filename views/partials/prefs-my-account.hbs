@@ -1,0 +1,34 @@
+<h3>{{#if isSelf}}Your{{else}}{{uid}}'s{{/if}} account</h3>
+
+<div class="nice-form">
+    <label>
+        <span>Username:</span>
+        <input type="text" readonly value="{{uid}}">
+    </label>
+    <label>
+        <span>Password:</span>
+        <a href="change-password" class="nice-btn">Change</a>
+    </label>
+    <label>
+        <span>Storage status: </span>
+        <input type="text" readonly value="Using {{size usedBytes}} of {{size quota}}">
+    </label>
+    <label>
+        <span>Files count: </span>
+        <input type="text" readonly value="Having {{files}} of {{maxFiles}} allowed files">
+    </label>
+
+    {{#unless isSelf}}
+        <hr>
+        <label>
+            <span>Admin status:</span>
+            <a href="promote" class="nice-btn">
+                {{#if isAdmin}}Demote to user
+                {{else}}Promote to admin
+                {{/if}}
+            </a>
+        </label>
+        <label><span>Quota settings:</span><a href="change-limits" class="nice-btn">Change quotas</a></label>
+        <label><span>Managing:</span><a href="delete" class="nice-btn">Delete user</a></label>
+    {{/unless}}
+</div>

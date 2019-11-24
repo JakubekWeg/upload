@@ -1,0 +1,22 @@
+<h3>Deleting user</h3>
+<form action="" method="post" class="nice-form with-submit" autocomplete="off">
+    <label>
+        <span>Deleting account:</span>
+        <input type="text" value="{{uid}}" readonly>
+    </label>
+    <label>
+        <span>User has:</span>
+        <input type="text" value="{{files}} files" readonly>
+    </label>
+
+    <label class="single-cell">
+        Deleting account results in all files permanently deleted!
+    </label>
+
+    <input type="hidden" name="proceed" value="true">
+
+    <label>
+        <a class="nice-btn" href="javascript:history.back()">Cancel</a>
+        <input class="nice-btn" type="submit" value="Delete" style="background-color: #CC0000">
+    </label>
+</form>

@@ -8,6 +8,7 @@ const session = require("express-session");
 const global_1 = require("./global");
 const files_route_1 = require("./files-route");
 const token_route_1 = require("./token-route");
+const preferences_route_1 = require("./preferences-route");
 (async () => {
     try {
         await database_1.initDatabase();
@@ -23,6 +24,7 @@ const token_route_1 = require("./token-route");
         root.isAdmin = true;
     }
     const app = express();
+    app.enable('strict routing');
     app.use(session({
         name: 'sid',
         secret: Array.from(new Array(16), () => (Math.random() * Math.pow(2, 31) | 0).toString(16)).join(''),
@@ -67,6 +69,7 @@ const token_route_1 = require("./token-route");
     app.get('/', (req, res) => global_1.withUser(req, res, () => res.redirect('/files')));
     files_route_1.init(app);
     token_route_1.init(app);
+    preferences_route_1.init(app);
     app.get('/login', (_req, res) => res.redirect('/'));
     app.post('/login', global_1.POST_DATA_HANDLER, (req, res) => global_1.withUser(req, res, () => res.redirect('/'), async () => {
         try {

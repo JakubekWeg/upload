@@ -7,6 +7,7 @@ import * as session from 'express-session'
 import { POST_DATA_HANDLER, withUser } from './global'
 import { init as initFilesRoutes } from './files-route'
 import { init as initTokenRoutes } from './token-route'
+import { init as initPreferencesRoutes } from './preferences-route'
 
 
 (async () => {
@@ -25,6 +26,7 @@ import { init as initTokenRoutes } from './token-route'
 
 
 	const app = express()
+	app.enable('strict routing')
 	app.use(session({
 		name: 'sid',
 		secret: Array.from(new Array(16), () => (Math.random() * Math.pow(2, 31) | 0).toString(16)).join(''),
@@ -78,6 +80,7 @@ import { init as initTokenRoutes } from './token-route'
 
 	initFilesRoutes(app)
 	initTokenRoutes(app)
+	initPreferencesRoutes(app)
 
 	app.get('/login', (_req, res) => res.redirect('/'))
 	app.post('/login', POST_DATA_HANDLER, (req, res) => withUser(req, res,

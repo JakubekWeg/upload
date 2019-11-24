@@ -1,0 +1,34 @@
+<div style="padding: 8px">
+    <ul class="simple-list">
+        <li><a href="/preferences/my-account">My account</a></li>
+        <li><a href="/preferences/all-users">All users</a></li>
+    </ul>
+
+    <hr>
+
+    {{#areEqual partial 'my-account' }}
+        {{>prefs-my-account}}
+    {{/areEqual}}
+    {{#areEqual partial 'change-password' }}
+        {{>prefs-change-password}}
+    {{/areEqual}}
+    {{#areEqual partial 'all-users' }}
+        {{>prefs-all-users}}
+    {{/areEqual}}
+    {{#areEqual partial 'add-user' }}
+        {{>prefs-add-user}}
+    {{/areEqual}}
+    {{#areEqual partial 'delete-user' }}
+        {{>prefs-deleting-user}}
+    {{/areEqual}}
+    {{#areEqual partial 'promote-user' }}
+        {{>prefs-promote-user}}
+    {{/areEqual}}
+    {{#areEqual partial 'change-limits' }}
+        {{>prefs-change-limits}}
+    {{/areEqual}}
+
+    {{#areEqual partial 'none' }}
+        <h4>Select preferences you want to manage</h4>
+    {{/areEqual}}
+</div>

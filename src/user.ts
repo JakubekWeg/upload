@@ -25,6 +25,7 @@ export class User {
 
 	public set password(newHashedPassword: string) {
 		if (this._password === newHashedPassword) return
+		this.activeSessions.splice(0)
 		this._password = newHashedPassword
 		db._updateUserInfo(this.uid, {password: newHashedPassword}).then(r => r)
 	}
@@ -63,6 +64,8 @@ export class User {
 
 	public set isAdmin(newValue: boolean) {
 		if (this._isAdmin === newValue) return
+		if (this.uid === 'root')
+			throw new Error('Can\'t change root\'s permissions!')
 		this._isAdmin = newValue
 		db._updateUserInfo(this.uid, {isAdmin: newValue}).then(r => r)
 	}
@@ -104,6 +107,7 @@ export class User {
 
 	private _uploadCode: string | undefined
 	private _uploadCodeExpires: number = 0
+
 	public get currentUploadCode(): string {
 		if (new Date().getTime() > this._uploadCodeExpires || !this._uploadCode) {
 			db._forgetUploadCode(this._uploadCode)
@@ -119,11 +123,25 @@ export class User {
 
 	public makeUploadCodeExpired() {
 		this._uploadCodeExpires = 0
-		this._uploadCode = undefined
 		db._forgetUploadCode(this._uploadCode)
+		this._uploadCode = undefined
 	}
 
 
+	public extendUploadCodeDuration() {
+		this._uploadCodeExpires += 5 * 60 * 1000
+	}
+
+	async deleteMe() {
+		if (this.uid === 'root')
+			throw new Error('Can\'t delete root user!')
+
+		await db._deleteUser(this.uid)
+		this.makeUploadCodeExpired()
+		const files = await Promise.all(this.files.map(f => db.getFileInfo(f)))
+		// @ts-ignore
+		await Promise.all(files.filter(f => !!f).map(f => f.deleteMe()))
+	}
 
 
 	/** This method is called by a framework, don't call it */
@@ -142,4 +160,5 @@ export class User {
 
 		this._usedBytes -= size
 	}
+
 }

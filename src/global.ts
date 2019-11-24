@@ -35,6 +35,17 @@ export const withUser = (req: Request, res: Response,
 		without()
 }
 
+export const withAdminUser = (req: Request, res: Response, then: UserCallback) => withUser(req, res, user => {
+	if (user.isAdmin)
+		then(user)
+	else
+		res.status(403).render('error', {
+			pageTitle: 'Error 403: Forbidden',
+			errorText: 'This site can be used only by administrators',
+			emoji: '😤',
+		})
+})
+
 export const generateRandomString = function (length: number, characters: string[]): string {
 	return Array.from(new Array(length),
 		() => characters[Math.random() * characters.length | 0])
@@ -93,6 +104,15 @@ export const handleFileUpload = function (req: Request, res: Response,
 					errorText: 'Your token was probably expired',
 				})
 
+			if (!user.canUploadOneMoreFile) {
+				await deleteFile(files.file.path)
+
+				return res.status(412).render('error', {
+					pageTitle: '412: Precondition Failed',
+					errorText: 'Reached files limit',
+					emoji: '😢',
+				})
+			}
 
 			if (files.file.size + user.usedBytes >= user.quota) {
 				await deleteFile(files.file.path)

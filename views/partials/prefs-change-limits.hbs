@@ -1,0 +1,61 @@
+<script>
+    let currentQuota = parseFloat("{{quota}}");
+
+    function bytesUpdated(event) {
+        const element = document.getElementsByName('unit')[0];
+        currentQuota = +event.target.value.replace(',', '.') * +element.selectedOptions[0].value;
+    }
+
+    function updateUnit(event) {
+        const element = document.getElementsByName('quota')[0];
+        element.value = (Math.max(1, currentQuota / +event.target.selectedOptions[0].value)).toString().replace(',', '.');
+    }
+</script>
+
+<h3>Changing {{uid}}'s storage limits</h3>
+<form action="" method="post" class="nice-form with-submit" autocomplete="off">
+    <label>
+        <span>Managing account:</span>
+        <input type="text" value="{{uid}}" readonly>
+    </label>
+
+    <br>
+
+    <label>
+        <span>User is currently using:</span>
+        <input type="text" value="{{size usedBytes}} of {{size quota}}" readonly>
+    </label>
+
+
+    <label>
+        <span>Set quota limit to:</span>
+        <label>
+            <input type="number" name="quota" value="{{quota}}" min="0" max="4294967296" onchange="bytesUpdated(event)">
+            <select name="unit" onchange="updateUnit(event)">
+                <option value="1">Bytes</option>
+                <option value="1024">Kilobytes</option>
+                <option value="1048576">Megabytes</option>
+                <option value="1073741824">Gigabytes</option>
+            </select>
+        </label>
+    </label>
+
+    <br>
+
+    <label>
+        <span>User has:</span>
+        <input type="text" value="{{files}} files" readonly>
+    </label>
+
+    <label>
+        <span>Set files limit to:</span>
+        <input type="number" name="filesLimit" value="{{filesLimit}}" min="0" max="65000">
+    </label>
+
+    <hr>
+
+    <label>
+        <a class="nice-btn" href="javascript:history.back()">Cancel</a>
+        <input class="nice-btn" type="submit" value="Update storage options">
+    </label>
+</form>

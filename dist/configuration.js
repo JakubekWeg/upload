@@ -21,6 +21,10 @@ exports.EXPIRE_UPLOAD_CODE_AFTER = 2 * 60 * 1000;
 exports.BCRYPT_ROUNDS = 12;
 // default root password, should be changed after configuration
 exports.DEFAULT_ROOT_PASSWORD = 'root';
+// default user's quota in bytes
+exports.DEFAULT_USER_QUOTA = 1024 * 1024 * 64; // 64MB
+// default user's files count limit
+exports.DEFAULT_USER_FILES_LIMIT = 16;
 // file which contains database configuration
 exports.DB_CONFIG_FILE = './db.config.json';
 // -------------- END OF CONFIG -------------------------

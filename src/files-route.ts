@@ -30,8 +30,6 @@ export function init(app: Express) {
 			pageTitle: 'List of your files',
 			userName: user.uid,
 			files: files,
-			usedBytes: user.usedBytes,
-			quota: user.quota,
 			sorting: FILES_SORTING_METHODS,
 			selectedSorting: req.query.sort,
 		})
@@ -163,6 +161,7 @@ export function init(app: Express) {
 		res.render('upload', {
 			pageTitle: 'Uploads new file',
 			availableBytes: Math.max(user.quota - user.usedBytes, 0),
+			reachedFilesLimit: !user.canUploadOneMoreFile
 		})
 	}))
 

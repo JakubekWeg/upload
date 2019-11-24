@@ -27,6 +27,7 @@ class User {
     set password(newHashedPassword) {
         if (this._password === newHashedPassword)
             return;
+        this.activeSessions.splice(0);
         this._password = newHashedPassword;
         database_1.INSTANCE._updateUserInfo(this.uid, { password: newHashedPassword }).then(r => r);
     }
@@ -57,6 +58,8 @@ class User {
     set isAdmin(newValue) {
         if (this._isAdmin === newValue)
             return;
+        if (this.uid === 'root')
+            throw new Error('Can\'t change root\'s permissions!');
         this._isAdmin = newValue;
         database_1.INSTANCE._updateUserInfo(this.uid, { isAdmin: newValue }).then(r => r);
     }
@@ -87,8 +90,20 @@ class User {
     }
     makeUploadCodeExpired() {
         this._uploadCodeExpires = 0;
-        this._uploadCode = undefined;
         database_1.INSTANCE._forgetUploadCode(this._uploadCode);
+        this._uploadCode = undefined;
+    }
+    extendUploadCodeDuration() {
+        this._uploadCodeExpires += 5 * 60 * 1000;
+    }
+    async deleteMe() {
+        if (this.uid === 'root')
+            throw new Error('Can\'t delete root user!');
+        await database_1.INSTANCE._deleteUser(this.uid);
+        this.makeUploadCodeExpired();
+        const files = await Promise.all(this.files.map(f => database_1.INSTANCE.getFileInfo(f)));
+        // @ts-ignore
+        await Promise.all(files.filter(f => !!f).map(f => f.deleteMe()));
     }
     /** This method is called by a framework, don't call it */
     _notifyFileCreated(fid, size) {

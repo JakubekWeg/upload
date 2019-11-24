@@ -95,7 +95,7 @@
         };
         const progressText = document.getElementById('progress');
         req.upload.onprogress = (e) => {
-            progressText.innerText = (Math.round(e.loaded / e.total * 1000) / 10).toFixed(2);
+            progressText.innerText = (Math.round(e.loaded / e.total * 1000) / 10).toFixed(1);
         };
         req.open(form.method, form.action);
         req.send(formData);
@@ -180,6 +180,12 @@
         <label id="big-file-warning" class="single-cell" style="display: none;">
             <span><span class="emoji">🤭</span> Size of this file is bigger then available space!</span>
         </label>
+
+        {{#if reachedFilesLimit}}
+            <label class="single-cell">
+                <span><span class="emoji">🤭</span> You have reached your files limit!</span>
+            </label>
+        {{/if}}
 
         <hr>
 

@@ -46,7 +46,7 @@ class Database {
     async createUser(name, password, quota, maxFiles) {
         if (!name)
             throw new Error('Missing user name');
-        name = name.toLowerCase();
+        name = name.trim().toLowerCase();
         if (this.USERS.has(name))
             throw new Error('User with this name already exists!');
         if (!Database.CORRECT_USER_NAME_REGEX.test(name))
@@ -64,6 +64,9 @@ class Database {
     hasUser(uid) {
         return this.USERS.has(uid.toLowerCase());
     }
+    get allUserIds() {
+        return Array.from(this.USERS.keys());
+    }
     async getUser(uid) {
         if (!uid)
             return;
@@ -80,6 +83,15 @@ class Database {
             this.USERS.set(uid, user);
         }
         return user;
+    }
+    /** This method is called by a framework, don't call it
+     * Use user.deleteMe() instead */
+    async _deleteUser(uid) {
+        uid = uid.trim().toLowerCase();
+        if (!this.USERS.has(uid))
+            return;
+        await this.mysqlConnection.query('DELETE FROM users WHERE name = ?', uid);
+        this.USERS.delete(uid);
     }
     async signInUserByPassword(login, password) {
         if (!!login && !!password) {

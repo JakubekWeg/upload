@@ -6,13 +6,17 @@ const database_1 = require("./database");
 function init(app) {
     app.get('/token/show', (req, res) => global_1.withUser(req, res, (user) => {
         res.render('token-showing', {
-            pageTitle: 'Your upload token:',
+            pageTitle: 'Your upload token',
             code: user.currentUploadCode,
             expireAfter: user.uploadCodeExpiresIn / 1000 | 0,
         });
     }));
     app.get('/token/renew', (req, res) => global_1.withUser(req, res, (user) => {
         user.makeUploadCodeExpired();
+        res.redirect('/token/show');
+    }));
+    app.get('/token/extend', (req, res) => global_1.withUser(req, res, (user) => {
+        user.extendUploadCodeDuration();
         res.redirect('/token/show');
     }));
     app.get('/token/upload', (_req, res) => {

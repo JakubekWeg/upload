@@ -1,48 +1,44 @@
 <div class="btn-bar">
     <a href="/upload" class="nice-btn">Upload new file</a>
     <a href="/token/show" class="nice-btn">Get a token</a>
+    <a href="/preferences" class="nice-btn">Preferences</a>
     <a href="/logout" class="nice-btn">Logout</a>
 </div>
 <hr>
 
 {{#if files}}
-<form class="nice-form" style="padding: 0;" action="" method="get" onchange="submit()">
-    <label>
-        <span>Your storage status: </span>
-        <input type="text" readonly value="Using {{size usedBytes}} of {{size quota}}">
-    </label>
-    <label>
-        <span>Sorting:</span>
-        <select name="sort">
-            {{#each sorting}}
-            <option value="{{@key}}" {{#areEqual @key ../selectedSorting}} selected="selected" {{/areEqual}}>
-                {{this.[1]}}
-            </option>
-            {{/each}}
-        </select>
-    </label>
+    <form class="nice-form" style="padding: 0;" action="" method="get" onchange="submit()">
+        <label>
+            <span>Sorting:</span>
+            <select name="sort">
+                {{#each sorting}}
+                    <option value="{{@key}}" {{#areEqual @key ../selectedSorting}} selected="selected" {{/areEqual}}>
+                        {{this.[1]}}
+                    </option>
+                {{/each}}
+            </select>
+        </label>
 
-    <label class="single-cell"><span>Here are all your files:</span></label>
-</form>
+        <label class="single-cell"><span>Here are all your files:</span></label>
+    </form>
 
-<div class="files-list">
-    {{#each files}}
-    <div>
-        <a class="name" href="/files/{{fid}}">
-            {{#if isPublic}}<span class="emoji">🔗</span>{{/if}}
-            {{name}}</a>
-        <span class="size">{{size size}}</span>
-        <span class="icons">
-            <a href="/files/{{fid}}/download"><img src="/img/download.svg" alt="DW"></a>
-            <a href="/files/{{fid}}/delete"><img src="/img/delete.svg" alt="DEL"></a>
-            {{!-- <a href="/files/{{fid}}/info"><img src="/img/info.svg" alt="INFO"></a> --}}
-        </span>
+    <div class="files-list">
+        {{#each files}}
+            <div>
+                <a class="name" href="/files/{{fid}}">
+                    {{#if isPublic}}<span class="emoji">🔗</span>{{/if}}
+                    {{name}}</a>
+                <span class="size">{{size size}}</span>
+                <span class="icons">
+                    <a href="/files/{{fid}}/download"><img src="/img/download.svg" alt="DW"></a>
+                    <a href="/files/{{fid}}/delete"><img src="/img/delete.svg" alt="DEL"></a>
+                </span>
+            </div>
+        {{/each}}
     </div>
-    {{/each}}
-</div>
 {{else}}
-<p class="error-message">
-    <span class="emoji">😯</span>
-    You haven't uploaded any file yet
-</p>
+    <p class="error-message">
+        <span class="emoji">😯</span>
+        You haven't uploaded any file yet
+    </p>
 {{/if}}

@@ -25,8 +25,6 @@ function init(app) {
             pageTitle: 'List of your files',
             userName: user.uid,
             files: files,
-            usedBytes: user.usedBytes,
-            quota: user.quota,
             sorting: FILES_SORTING_METHODS,
             selectedSorting: req.query.sort,
         });
@@ -147,6 +145,7 @@ function init(app) {
         res.render('upload', {
             pageTitle: 'Uploads new file',
             availableBytes: Math.max(user.quota - user.usedBytes, 0),
+            reachedFilesLimit: !user.canUploadOneMoreFile
         });
     }));
     app.post('/upload', (req, res) => global_1.withUser(req, res, (user) => {

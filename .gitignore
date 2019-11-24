@@ -7,5 +7,7 @@
 
 # created by application
 /uploads
+/uploads/
 /.tmp.uploads
+/.tmp.uploads/
 /db.json

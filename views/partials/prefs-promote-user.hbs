@@ -1,0 +1,34 @@
+<h3>{{#if isAdmin}}Demoting{{else}}Promoting{{/if}} {{uid}}</h3>
+<form action="" method="post" class="nice-form with-submit" autocomplete="off">
+    <label>
+        <span>Managing account:</span>
+        <input type="text" value="{{uid}}" readonly>
+    </label>
+    <label>
+        <span>User will be:</span>
+        <input type="text" value="{{#if isAdmin}}Normal user{{else}}Admin{{/if}}" readonly>
+    </label>
+
+    <label class="single-cell">
+        {{#if isAdmin}}
+            Normal used won't be able to:
+        {{else}}
+            Administrators can do these things:
+        {{/if}}
+        <ul>
+            <li>Creating new users</li>
+            <li>Changing permissions of any user</li>
+            <li>Deleting any user</li>
+            <li>Changing password of any user</li>
+        </ul>
+        <small>Actions above doesn't affect root (e.g. nobody can delete root)</small>
+    </label>
+
+    <input type="hidden" name="proceed" value="true">
+    <input type="hidden" name="makeAdmin" value="{{#if isAdmin}}false{{else}}true{{/if}}">
+
+    <label>
+        <a class="nice-btn" href="javascript:history.back()">Cancel</a>
+        <input class="nice-btn" type="submit" value="{{#if isAdmin}}Demote{{else}}Promote{{/if}}" style="background-color: #CC0000">
+    </label>
+</form>

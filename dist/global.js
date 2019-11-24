@@ -27,6 +27,16 @@ exports.withUser = (req, res, then, without = () => renderLoginPage(res)) => {
     else
         without();
 };
+exports.withAdminUser = (req, res, then) => exports.withUser(req, res, user => {
+    if (user.isAdmin)
+        then(user);
+    else
+        res.status(403).render('error', {
+            pageTitle: 'Error 403: Forbidden',
+            errorText: 'This site can be used only by administrators',
+            emoji: '😤',
+        });
+});
 exports.generateRandomString = function (length, characters) {
     return Array.from(new Array(length), () => characters[Math.random() * characters.length | 0])
         .join('');
@@ -70,6 +80,14 @@ exports.handleFileUpload = function (req, res, user, onSuccess) {
                     pageTitle: '403: Forbidden',
                     errorText: 'Your token was probably expired',
                 });
+            if (!user.canUploadOneMoreFile) {
+                await fs_1.deleteFile(files.file.path);
+                return res.status(412).render('error', {
+                    pageTitle: '412: Precondition Failed',
+                    errorText: 'Reached files limit',
+                    emoji: '😢',
+                });
+            }
             if (files.file.size + user.usedBytes >= user.quota) {
                 await fs_1.deleteFile(files.file.path);
                 return res.status(413).render('error', {
