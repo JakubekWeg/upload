@@ -2,10 +2,9 @@
   "name": "upload",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/server.js"
+    "build": "esbuild --bundle --outdir=dist --external:sqlite3 --external:sqlite --format=cjs --platform=node src/server.ts",
+    "start": "node dist/server.js"
   },
   "author": "Jakub Węgrzyn",
   "license": "ISC",
@@ -16,7 +15,9 @@
     "express-formidable": "^1.2.0",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.0",
-    "mysql": "^2.0.1"
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.6",
+    "esbuild": "0.19.10"
   },
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
@@ -24,7 +25,6 @@
     "@types/express-formidable": "^1.0.4",
     "@types/express-handlebars": "^3.1.0",
     "@types/express-session": "^1.15.16",
-    "@types/mysql": "^2.15.8",
     "typescript": "^3.7.2"
   }
 }
