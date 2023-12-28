@@ -11,4 +11,4 @@ services:
       - ${UPLOADS_PATH:?Path on the disk where to store ready recordings}:/app/uploads:rw
       - persistent:/persistent:rw
     ports:
-      - "8123:8123"
+      - "43325:8123"

@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import hbs from "express-handlebars";
+import * as hbs from "express-handlebars";
 import session from "express-session";
 import {
   DEFAULT_ROOT_PASSWORD,
@@ -17,7 +17,10 @@ import { init as initTokenRoutes } from "./token-route";
     await initDatabase();
     console.log("Connected with database!");
   } catch (e) {
-    console.error("Unable to connect to database:", e.message);
+    console.error(
+      "Unable to connect to database:",
+      (e as any)?.message ?? "unknown error"
+    );
     return;
   }
   if (!db.hasUser("root")) {
@@ -51,8 +54,9 @@ import { init as initTokenRoutes } from "./token-route";
   app.set("view engine", "hbs");
   app.engine(
     "hbs",
-    hbs({
+    hbs.engine({
       defaultLayout: "main.hbs",
+      runtimeOptions: { allowProtoPropertiesByDefault: true },
       extname: ".hbs",
       partialsDir: "./views/partials",
       helpers: {
