@@ -8,7 +8,9 @@ services:
     build: .
     restart: on-failure:5
     volumes:
-      - ${UPLOADS_PATH:?Path on the disk where to store ready recordings}:/app/uploads:rw
+      - ${UPLOADS_PATH:?Path on the disk where to store uploaded files}:/app/uploads:rw
       - persistent:/persistent:rw
+    environment:
+      - NODE_ENV=${NODE_ENV:-DEV}
     ports:
       - "43325:8123"

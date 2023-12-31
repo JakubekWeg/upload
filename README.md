@@ -7,7 +7,7 @@ It supports multiple users with their own quotas, sharing files publicly as well
 ### Running
 
 ```shell
-UPLOADS_PATH=./uploads docker-compose up --build
+NODE_ENV=production UPLOADS_PATH=./uploads docker-compose up --build -d
 ```
 
 Access web interface via [localhost:43325](http://localhost:43325).

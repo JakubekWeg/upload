@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readdirSync, unlinkSync } from "fs";
 // -------------- CONFIG HERE: -------------------------
 // decides if this server is running in production mode
 export const PRODUCTION: boolean = process.env.NODE_ENV === "production";
+console.log({ PRODUCTION, env: process.env.NODE_ENV });
 
 // folder where uploaded files are saved
 export const UPLOADS_FOLDER: string = "./uploads";
@@ -36,9 +37,6 @@ export const DEFAULT_USER_QUOTA: number = 1024 * 1024 * 64; // 64MB
 
 // default user's files count limit
 export const DEFAULT_USER_FILES_LIMIT: number = 16;
-
-// file which contains database configuration
-export const DB_CONFIG_FILE: string = "./db.config.json";
 
 // -------------- END OF CONFIG -------------------------
 // preparing folders, don't change
